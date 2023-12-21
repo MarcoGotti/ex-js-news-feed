@@ -1,0 +1,51 @@
+.box{
+    padding: 1rem .5rem 1rem;
+
+    & h3{
+        padding-right: 4rem;
+        font-weight: 800;
+        font-size: 36px;
+        margin-bottom: 0;
+    }
+
+    & h4{
+        font-weight: 700; 
+    }
+
+    .date {
+        font-size: 14px;
+    }
+
+    .tag{
+        background-color: green;
+        color: white;
+        margin-top: 1rem;
+        padding: 0 0.75rem 0.30rem;
+        border-radius: 0.5rem;
+        display: inline-block;
+    }
+
+    & p{
+        font-size: 18px;
+        line-height: 1.5rem;
+    }
+
+    & i{
+        font-size: 2.25rem;
+        top: 1.5rem;
+        right: 0.75rem;
+    }
+}
+
+
+
+
+.fs_36{
+    font-size: 36px;
+}
+.line_height_6{
+    line-height: 1.5rem;
+}
+
+
+
