@@ -8,7 +8,7 @@ const articles = [
         tags: 'geo, tech',
         author: 'Diana Rossi',
         published: '2023-02-11',
-        image: './assets/images/rubber-duck.jpg'
+        image: 'rubber-duck'
     },
     {
         id:'2', 
@@ -17,7 +17,7 @@ const articles = [
         tags: 'viaggi, geo',
         author: 'Fabio Mari',
         published: '2023-03-14',
-        image: './assets/images/deep-sea.jpg'
+        image: 'deep-sea'
     },
     {
         id:'3', 
@@ -26,7 +26,7 @@ const articles = [
         tags: 'cucina',
         author: 'Marta Bianchi',
         published: '2023-04-20',
-        image: './assets/images/kitchen-food.jpg'
+        image: 'kitchen-food'
     },
     {
         id:'4', 
@@ -35,9 +35,41 @@ const articles = [
         tags: 'arte, tech',
         author: 'Gabriele Neri',
         published: '2023-05-29',
-        image: './assets/images/modern-art.jpg'
+        image: 'modern-art'
     }
 ];
 
+//convert us-date in eu-date
+const rowEl = document.querySelector('.row');
+
+articles.forEach(article  => {
+    const split = article.published.split(/[-]/);
+    article.published = (split[2]+'-'+split[1]+'-'+split[0]); 
+
+    const articleMarkUp = generateArticleMarkUp(article.title, article.author, article.published, article.content, article.image);
+    rowEl.insertAdjacentHTML("beforeend", articleMarkUp);   
+})
+console.log(articles);
 
 
+function generateArticleMarkUp(title, author, date, content, image) {
+    const articleMarkUp =`            
+    <div class="col">
+        <div class="box bg-white position-relative">
+            <div>
+                <h3>${title}</h3>
+                <h4>pubblicato da ${author}</h4>
+                <span class="date">in data ${date}</span>
+                <p class="mt-2">${content}</p>
+                <img width="100%" src="./assets/images/${image}.jpg" alt="${image}">
+                <i class="fa-regular fa-bookmark position-absolute"></i>
+            </div>            
+            <div class="tagsBox">
+                <div class="tag">geo</div>
+                <div class="tag">geo</div>
+            </div>
+        </div>
+    </div>
+    `
+    return articleMarkUp
+}

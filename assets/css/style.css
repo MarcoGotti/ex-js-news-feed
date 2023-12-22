@@ -1,51 +1,64 @@
+.containerCSS{
+    max-width: 70%;
+}
+
 .box{
-    padding: 1rem .5rem 1rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    padding: 1.75rem 1.25rem 1rem;
+    height: 100%;
 
     & h3{
         padding-right: 4rem;
         font-weight: 800;
         font-size: 36px;
-        margin-bottom: 0;
+        line-height: 2.5rem;
+        font-weight: 800;
     }
 
     & h4{
         font-weight: 700; 
+        margin-bottom: -0.15rem;
     }
 
     .date {
-        font-size: 14px;
-    }
-
-    .tag{
-        background-color: green;
-        color: white;
-        margin-top: 1rem;
-        padding: 0 0.75rem 0.30rem;
-        border-radius: 0.5rem;
-        display: inline-block;
+        font-size: 18px;
+        font-weight: 400;
     }
 
     & p{
-        font-size: 18px;
+        font-size: 21px;
+        font-weight: 500;
         line-height: 1.5rem;
+    }
+
+    img{
+        display: block;
+    }
+
+    .tagsBox {
+        vertical-align: bottom;
+        margin-top: 1.25rem;
+    }
+   
+    .tag{
+        display: inline-block;
+        background-color: green;
+        color: white;
+        padding: 0.5rem 0.75rem 0.40rem;
+        border-radius: 0.5rem;
+        font-weight: 500;
+        font-size: 18px;
     }
 
     & i{
         font-size: 2.25rem;
-        top: 1.5rem;
-        right: 0.75rem;
+        top: 1.75rem;
+        right: 1.5rem;
     }
 }
 
-
-
-
-.fs_36{
-    font-size: 36px;
-}
-.line_height_6{
-    line-height: 1.5rem;
-}
 
 
 

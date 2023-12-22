@@ -5,58 +5,52 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ex-js-news-feed</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" integrity="sha512-DTOQO9RWCH3ppGqcWaEA1BIZOC6xxalwEsw9c2QQeAIftl+Vegovlnee1c9QX4TctnWMn13TZye+giMm8e2LwA==" crossorigin="anonymous" referrerpolicy="no-referrer"/>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
     <link rel="stylesheet" href="./assets/css/style.css">
 </head>
-<body class="bg-dark">
-    <div class="container">
+<body class="bg-dark" style="font-family: 'Montserrat', sans-serif;">
+    <div class="container containerCSS">
         <h1 class="text-center text-white fw-bold ">News Feed</h1>
-        <div class="row row-cols-2 justify-content-between my-3">
-            <div class="col-4">
-                <div class="bg-white">ciao</div>
+        <div class="nav bg-white mb-4 p-4">
+            <div>
+                <select class="form-select form-select-sm">
+                    <option selected>Open this select menu</option>
+                    <option value="1">One</option>
+                    <option value="2">Two</option>
+                    <option value="3">Three</option>
+                  </select>
             </div>
-            <div class="col bg-white"></div>
-            <div class="col-4 text-end">
-                <div class="bg-white">ciao</div>
+            <div class="ms-auto">
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" value="" id="flexCheckChecked" checked>
+                    <label class="form-check-label" for="flexCheckChecked">
+                      Checked checkbox
+                    </label>
+                  </div>
             </div>
         </div>
-        <div class="row row-cols-1 row-cols-xl-2 row-gap-4">
-            <div class="col">
-                <div class="box bg-white position-relative">
-                    <h3 class="mb-0">Scoperta di una nuova specie di papera di gomma</h3>
-                    <h4 class="mb-0">pubblicato da Diana Rossi</h4>
-                    <span class="date">in data 25/09/2023</span>
-                    <p class="mt-2">Un breve articolo sulla recente scoperta di una nuova specie di papera di gomma mai vista prima.</p>
-                    <img width="100%" src="./assets/images/rubber-duck.jpg" alt="rubber-duck">
-                    <div class="tag">geo</div>
-                    <div class="tag">geo</div>
-                    <i class="fa-regular fa-bookmark position-absolute"></i>
+        <!-- ./nav: select and checkbox stripe -->
+        <div class="row row-cols-1 row-cols-xxl-2 row-gap-4">
+            <!-- <div class="col">
+                <div class="box bg-white position-relative d-flex flex-column justify-content-between">
+                    <div>
+                        <h3>Scoperta di una nuova specie di papera di gomma</h3>
+                        <h4>pubblicato da Diana Rossi</h4>
+                        <span class="date">in data 25/09/2023</span>
+                        <p class="mt-2">Un breve articolo sulla recente scoperta di una nuova specie di papera di gomma mai vista prima.</p>
+                        <img width="100%" src="./assets/images/rubber-duck.jpg" alt="rubber-duck">
+                        <i class="fa-regular fa-bookmark position-absolute"></i>
+                        </div>
+                    <div class="tagsBox">
+                        <div class="tag">geo</div>
+                        <div class="tag">geo</div>
+                    </div>                 
                 </div>
-            </div>
-            <div class="col">
-                <div class="box bg-white  position-relative">
-                    <h3 class="mb-0">Scoperta di una nuova specie di papera di gomma</h3>
-                    <h4 class="mb-0">pubblicato da Diana Rossi</h4>
-                    <span class="date">in data 25/09/2023</span>
-                    <p class="mt-2">Un breve articolo sulla recente scoperta di una nuova specie di papera di gomma mai vista prima.</p>
-                    <img width="100%" src="./assets/images/rubber-duck.jpg" alt="rubber-duck">
-                    <div class="tag">geo</div>
-                    <div class="tag">geo</div>
-                    <i class="fa-regular fa-bookmark position-absolute"></i>
-                </div>
-            </div>
-            <div class="col">
-                <div class="box bg-white  position-relative">
-                    <h3 class="mb-0">Scoperta di una nuova specie di papera di gomma</h3>
-                    <h4 class="mb-0">pubblicato da Diana Rossi</h4>
-                    <span class="date">in data 25/09/2023</span>
-                    <p class="mt-2">Un breve articolo sulla recente scoperta di una nuova specie di papera di gomma mai vista prima.</p>
-                    <img width="100%" src="./assets/images/rubber-duck.jpg" alt="rubber-duck">
-                    <div class="tag">geo</div>
-                    <div class="tag">geo</div>
-                    <i class="fa-regular fa-bookmark position-absolute"></i>
-                </div>
-            </div>
+            </div> -->
+          </div>
         </div>
     </div>
     
