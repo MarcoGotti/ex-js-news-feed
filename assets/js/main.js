@@ -39,20 +39,33 @@ const articles = [
     }
 ];
 
-//convert us-date in eu-date
 const rowEl = document.querySelector('.row');
 
 articles.forEach(article  => {
-    const split = article.published.split(/[-]/);
-    article.published = (split[2]+'-'+split[1]+'-'+split[0]); 
 
-    const articleMarkUp = generateArticleMarkUp(article.title, article.author, article.published, article.content, article.image);
-    rowEl.insertAdjacentHTML("beforeend", articleMarkUp);   
+    //convert us-date --> eu-date
+    const split = article.published.split(/-/);
+    article.published = (split[2]+'/'+split[1]+'/'+split[0]); 
+
+    // cicle function generateArticleMarkUp() > tagsBoxEl
+    const articleMarkUp = generateArticleMarkUp(article.title, article.author, article.published, article.content, article.image, article.id);
+    rowEl.insertAdjacentHTML("beforeend", articleMarkUp);  
+
+    // cicle function generateTags()
+    const tagsBoxEl = document.getElementById([article.id]);
+    const tags = article.tags.split(/,/)
+
+    for (let i = 0; i < tags.length; i++) {
+        const tag = tags[i];
+
+        const tagMarkUp = generateTags(tag)
+        tagsBoxEl.insertAdjacentHTML("beforeend", tagMarkUp);
+    }
 })
-console.log(articles);
 
-
-function generateArticleMarkUp(title, author, date, content, image) {
+// ******************************************************************
+//functions
+function generateArticleMarkUp(title, author, date, content, image, id) {
     const articleMarkUp =`            
     <div class="col">
         <div class="box bg-white position-relative">
@@ -64,12 +77,16 @@ function generateArticleMarkUp(title, author, date, content, image) {
                 <img width="100%" src="./assets/images/${image}.jpg" alt="${image}">
                 <i class="fa-regular fa-bookmark position-absolute"></i>
             </div>            
-            <div class="tagsBox">
-                <div class="tag">geo</div>
-                <div class="tag">geo</div>
+            <div id="${id}" class="tagsBox">            
             </div>
         </div>
     </div>
     `
     return articleMarkUp
+}
+
+function generateTags(type) {
+    const tagMarkUp = `<div class="tag ${type}_bgColor">${type}</div>`
+
+    return tagMarkUp
 }

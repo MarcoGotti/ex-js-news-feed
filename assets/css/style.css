@@ -44,9 +44,9 @@
    
     .tag{
         display: inline-block;
-        background-color: green;
         color: white;
         padding: 0.5rem 0.75rem 0.40rem;
+        margin-right: 0.75rem;
         border-radius: 0.5rem;
         font-weight: 500;
         font-size: 18px;
@@ -57,6 +57,26 @@
         top: 1.75rem;
         right: 1.5rem;
     }
+}
+
+.geo_bgColor {
+    background-color: green;
+}
+
+.tech_bgColor {
+    background-color: red;
+}
+
+.viaggi_bgColor {
+    background-color: black;
+}
+
+.cucina_bgColor {
+    background-color: blue;
+}
+
+.arte_bgColor {
+    background-color: purple;
 }
 
 
