@@ -1,5 +1,3 @@
-
-
 const articles = [
     {
         id:'1', 
@@ -39,12 +37,71 @@ const articles = [
     }
 ];
 
-const rowEl = document.querySelector('.row');
+/* qui ho solo creato trasformato array in anticipo ma poi devo cambiare tags --> article.tags */
 
-articles.forEach(article  => {
+articles.forEach(article => {
+    //convert us-date --> eu-date
+    const split = article.published.split(/-/); 
+    article.published = (split[2]+'/'+split[1]+'/'+split[0]); 
+    //convert key tags in array
+    const tags = article.tags.split(/, /)
+    article.tags = tags
+})
+console.log(articles);
+console.log(articles[1].tags[0]);
+
+
+
+
+document.getElementById('selectTag').addEventListener('change', () => {
+	//empty the DOM-element .row before appending new MarkUp
+    const rowEl = document.querySelector('.row');
+	rowEl.innerHTML = '';  
+	
+	//create array of objects according to selected property .tag
+    const tagType = document.getElementById('selectTag').value
+    //console.log(tagType);
+	const tagSelectArticles = articles.filter((article) => {
+        //console.log(article.tags.length);
+
+        for (let i = 0; i < article.tags.length; i++) {
+
+            if (article.tags[i] === tagType || tagType === 'all') {
+               return true;         
+            } /* else {
+                rowEl.innerHTML = 'CIAO CIAO';
+            } */
+        
+        }
+    })
+    console.log(tagSelectArticles);       
+    tagSelectArticles.forEach(article => {
+        // cicle function generateArticleMarkUp() > tagsBoxEl
+        const articleMarkUp = generateArticleMarkUp(article.title, article.author, article.published, article.content, article.image, article.id);
+        rowEl.insertAdjacentHTML("beforeend", articleMarkUp);  
+
+        // cicle function generateTags()
+        const tagsBoxEl = document.getElementById([article.id]);
+    
+        for (let i = 0; i < article.tags.length; i++) {
+  
+            const tagMarkUp = generateTags(article.tags[i])
+            tagsBoxEl.insertAdjacentHTML("beforeend", tagMarkUp);
+        }
+        
+    })      
+        
+        //console.log(tagSelectArticles);
+})    
+
+
+
+/* ************************************************************** */
+
+/* articles.forEach(article  => {
 
     //convert us-date --> eu-date
-    const split = article.published.split(/-/);
+    const split = article.published.split(/-/); 
     article.published = (split[2]+'/'+split[1]+'/'+split[0]); 
 
     // cicle function generateArticleMarkUp() > tagsBoxEl
@@ -56,12 +113,11 @@ articles.forEach(article  => {
     const tags = article.tags.split(/,/)
 
     for (let i = 0; i < tags.length; i++) {
-        const tag = tags[i];
-
-        const tagMarkUp = generateTags(tag)
+    
+        const tagMarkUp = generateTags(tags[i])
         tagsBoxEl.insertAdjacentHTML("beforeend", tagMarkUp);
     }
-})
+}) */
 
 // ******************************************************************
 //functions
