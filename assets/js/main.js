@@ -37,36 +37,48 @@ const articles = [
     }
 ];
 
-/* qui ho solo creato trasformato array in anticipo ma poi devo cambiare tags --> article.tags */
+convertObjects(articles)
 
-articles.forEach(article => {
-    //convert us-date --> eu-date
-    const split = article.published.split(/-/); 
-    article.published = (split[2]+'/'+split[1]+'/'+split[0]); 
-    //convert key tags in array
-    const tags = article.tags.split(/, /)
-    article.tags = tags
+/* ****************************************************************** */
+//populate MarkUp
+
+const rowEl = document.querySelector('.row');
+
+renderArticles(articles, rowEl)
+
+document.querySelector('#rubber-duck i').classList.replace('fa-regular', 'fa-solid');
+
+/* ********************************************************************* */
+// populate select options
+
+const selectEl = document.getElementById('selectTag')
+
+const tagTypes = []
+const types = articles.filter(article => {
+    for (let i = 0; i < article.tags.length; i++) {
+        //tagTypes.push(article.tags[i])
+        if(!tagTypes.includes(article.tags[i])){
+            tagTypes.push(article.tags[i])
+          }    
+    } 
+    return tagTypes
+    
 })
-console.log(articles);
-console.log(articles[1].tags[0]);
 
+tagTypes.unshift('politica')
+//console.log(tagTypes);
+renderSelectOptions(tagTypes, selectEl)
 
+/* ************************************************************************ */
+// Select Filter
 
+selectEl.addEventListener('change', function(e) {
 
-document.getElementById('selectTag').addEventListener('change', () => {
-	//empty the DOM-element .row before appending new MarkUp
-    const rowEl = document.querySelector('.row');
-	rowEl.innerHTML = '';  
-	
-	//create array of objects according to selected property .tag
-    const tagType = document.getElementById('selectTag').value
-    //console.log(tagType);
-	const tagSelectArticles = articles.filter((article) => {
-        //console.log(article.tags.length);
+    const selectedArticles = articles.filter((article) => {
 
         for (let i = 0; i < article.tags.length; i++) {
 
-            if (article.tags[i] === tagType || tagType === 'all') {
+            if (article.tags[i] === this.value || this.value === 'all') {
                return true;         
             } /* else {
                 rowEl.innerHTML = 'CIAO CIAO';
@@ -74,75 +86,114 @@ document.getElementById('selectTag').addEventListener('change', () => {
         
         }
     })
-    console.log(tagSelectArticles);       
-    tagSelectArticles.forEach(article => {
-        // cicle function generateArticleMarkUp() > tagsBoxEl
-        const articleMarkUp = generateArticleMarkUp(article.title, article.author, article.published, article.content, article.image, article.id);
-        rowEl.insertAdjacentHTML("beforeend", articleMarkUp);  
+    console.log(selectedArticles);
 
-        // cicle function generateTags()
-        const tagsBoxEl = document.getElementById([article.id]);
+    rowEl.innerHTML = ''; 
+
+    renderArticles (selectedArticles, rowEl)
     
+    document.querySelector('#rubber-duck i').classList.replace('fa-regular', 'fa-solid');
+})
+
+/* **************************************************************************+ */
+
+/**
+ * Converts two keys (.published and .tags) of every Objects of an Array
+ * @param {Array} objectsList An Array of Objects
+ */
+function convertObjects(objectsList) {
+    objectsList.forEach(article => {
+        //convert us-date --> eu-date
+        const split = article.published.split(/-/); 
+        article.published = (split[2]+'/'+split[1]+'/'+split[0]); 
+        //convert key-tags in array
+        const tags = article.tags.split(/, /)
+        article.tags = tags
+    })
+}
+
+/**
+ * Renders all options in a select dynamically
+ * @param {Array} optionsList A list of Strings
+ * @param {Object} selectDomEl the SelectDomElement where append all Options 
+ */
+function renderSelectOptions (optionsList, selectDomEl){
+    optionsList.forEach(option => {
+        const optionEl = document.createElement('option')
+        optionEl.value = option
+        optionEl.innerText = option.charAt(0).toUpperCase() + option.slice(1, option.length).toLowerCase()
+
+    selectDomEl.appendChild(optionEl)
+    })
+
+}
+
+/**
+ * Renders a list of Article-cards into the given Dom Element 
+ * @param {Array} articleList An Array of Objects 
+ * @param {Object} domElement The given dom element where to append articles
+ */
+function renderArticles (articleList, domElement){
+    
+    articleList.forEach(article => {
+        // rendering main markup of article cards
+        domElement.insertAdjacentHTML("beforeend", generateArticle(article));  
+    
+        // rendering cathegory tags according to objects key 'tags'
+        const tagsBoxEl = document.querySelector(`#${article.image} .tagsBox`);
+        //console.log(tagsBoxEl);
+        
         for (let i = 0; i < article.tags.length; i++) {
-  
-            const tagMarkUp = generateTags(article.tags[i])
-            tagsBoxEl.insertAdjacentHTML("beforeend", tagMarkUp);
-        }
-        
-    })      
-        
-        //console.log(tagSelectArticles);
-})    
-
-
-
-/* ************************************************************** */
-
-/* articles.forEach(article  => {
-
-    //convert us-date --> eu-date
-    const split = article.published.split(/-/); 
-    article.published = (split[2]+'/'+split[1]+'/'+split[0]); 
-
-    // cicle function generateArticleMarkUp() > tagsBoxEl
-    const articleMarkUp = generateArticleMarkUp(article.title, article.author, article.published, article.content, article.image, article.id);
-    rowEl.insertAdjacentHTML("beforeend", articleMarkUp);  
-
-    // cicle function generateTags()
-    const tagsBoxEl = document.getElementById([article.id]);
-    const tags = article.tags.split(/,/)
-
-    for (let i = 0; i < tags.length; i++) {
+            tagsBoxEl.insertAdjacentHTML("beforeend", generateTags(article.tags[i]));
+        }   
     
-        const tagMarkUp = generateTags(tags[i])
-        tagsBoxEl.insertAdjacentHTML("beforeend", tagMarkUp);
-    }
-}) */
+        // rendering bookmarks
+        const boxEl = document.getElementById([article.image])
+        //console.log(boxEl);
+        const iEl = generateBookMark()
+        //console.log(iEl);
+        boxEl.appendChild(iEl)
+    }) 
+}
 
-// ******************************************************************
-//functions
-function generateArticleMarkUp(title, author, date, content, image, id) {
-    const articleMarkUp =`            
+/**
+ * Generate the main-Markup of a Article-card
+ * @param {Object} article An Object with several keys
+ * @returns An Object: MarkUp
+ */
+function generateArticle(article) {
+    return `            
     <div class="col">
-        <div class="box bg-white position-relative">
+        <div id='${article.image}' class="box bg-white position-relative">
             <div>
-                <h3>${title}</h3>
-                <h4>pubblicato da ${author}</h4>
-                <span class="date">in data ${date}</span>
-                <p class="mt-2">${content}</p>
-                <img width="100%" src="./assets/images/${image}.jpg" alt="${image}">
-                <i class="fa-regular fa-bookmark position-absolute"></i>
-            </div>            
-            <div id="${id}" class="tagsBox">            
-            </div>
+                <h3>${article.title}</h3>
+                <h4>pubblicato da ${article.author}</h4>
+                <span class="date">in data ${article.published}</span>
+                <p class="mt-2">${article.content}</p>
+                <img width="100%" src="./assets/images/${article.image}.jpg" alt="">
+            </div>                        
+            <div class="tagsBox">           
+            </div>                       
         </div>
     </div>
     `
-    return articleMarkUp
 }
 
+/**
+ * Generate more specific MarkUp to be added to the main-MarkUp
+ * @param {String} type 
+ * @returns Object: MarkUp
+ */
 function generateTags(type) {
-    const tagMarkUp = `<div class="tag ${type}_bgColor">${type}</div>`
+    return `<div class="tag ${type}_bgColor">${type}</div>`
 
-    return tagMarkUp
-}
+};
+
+function generateBookMark() {
+    const iEl = document.createElement('i');
+    iEl.classList.add('fa-regular', 'fa-bookmark', 'position-absolute');
+    iEl.addEventListener('click', function(e) {
+        iEl.classList.replace('fa-regular', 'fa-solid');
+    })
+    return iEl
+};
