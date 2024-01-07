@@ -66,7 +66,7 @@ const types = articles.filter(article => {
 })
 
 tagTypes.unshift('politica')
-//console.log(tagTypes);
+
 renderSelectOptions(tagTypes, selectEl)
 
 /* ************************************************************************ */
@@ -74,7 +74,7 @@ renderSelectOptions(tagTypes, selectEl)
 
 selectEl.addEventListener('change', function(e) {
 
-    const selectedArticles = articles.filter((article) => {
+    selectedArticles = articles.filter((article) => {
 
         for (let i = 0; i < article.tags.length; i++) {
 
@@ -96,6 +96,151 @@ selectEl.addEventListener('change', function(e) {
 })
 
 /* **************************************************************************+ */
+// Checkbox Filter
+
+const checkEl = document.getElementById('checkedArticles')
+
+let checkedArticles = []
+
+checkEl.addEventListener('change', function(e){
+    
+    if (this.checked) {
+        
+        const checkedNews = document.querySelectorAll('i')
+
+        checkedNews.forEach(bookmarkEl => {
+            const iId = bookmarkEl.id
+            let x = bookmarkEl.classList.contains('fa-solid')
+            console.log(x);
+            if (x === true){
+                
+                console.log(iId);
+                console.log(articles[iId - 1]);
+                checkedArticles.push(articles[iId - 1])
+                
+                /* const checkedArticles = selectedArticles.filter(article => article.id === iId)
+                console.log(checkedArticles); */
+                /* rowEl.innerHTML = '';
+    
+                renderArticles (checkedArticles, rowEl) */
+            }
+            
+        })
+        console.log(checkedArticles);
+
+        rowEl.innerHTML = '';
+    
+        renderArticles (checkedArticles, rowEl)
+
+        console.log("Checkbox is checked..");
+
+      } else {
+        console.log("Checkbox is default..");
+        checkedArticles = []
+      }
+    
+    
+ /*    const checkedNews = document.querySelectorAll('i')
+    console.log(checkedNews);
+   
+    checkedNews.forEach(bookmarkEl => {
+        let x = bookmarkEl.classList.contains('fa-solid')
+        console.log(x, bookmarkEl.id);
+        // x ?  :
+        if (x === true){
+            const iId = bookmarkEl.id
+            console.log(iId);
+            const checkedArticles = selectedArticles.filter(article => article.id === iId)
+
+            rowEl.innerHTML = '';
+
+            renderArticles (checkedArticles, rowEl)
+        }
+        
+    }) */
+    
+    //console.log(checkedNews[0].id);
+    //selectedArticles.filter(article => )
+
+
+    //this.checked ? console.log('Yes') : console.log('No');
+})
+
+
+
+/**
+ * Renders a list of Article-cards into the given Dom Element 
+ * @param {Array} articleList An Array of Objects 
+ * @param {Object} domElement The given dom element where to append articles
+ */
+function renderArticles (articleList, domElement){
+    
+    articleList.forEach(article => {
+        // rendering main markup of article cards
+        domElement.insertAdjacentHTML("beforeend", generateArticle(article));  
+    
+        // rendering cathegory tags according to objects key 'tags'
+        const tagsBoxEl = document.querySelector(`#${article.image} .tagsBox`);
+        //console.log(tagsBoxEl);
+        
+        for (let i = 0; i < article.tags.length; i++) {
+            tagsBoxEl.insertAdjacentHTML("beforeend", generateTags(article.tags[i]));
+        }   
+    
+        // rendering bookmarks
+        const boxEl = document.getElementById([article.image])
+        const iEl = generateBookMark(article.id)
+        boxEl.appendChild(iEl)
+    }) 
+}
+
+/**
+ * Generate the main-Markup of a Article-card
+ * @param {Object} article An Object with several keys
+ * @returns An Object: MarkUp
+ */
+function generateArticle(article) {
+    return `            
+    <div class="col">
+        <div id='${article.image}' class="box bg-white position-relative">
+            <div>
+                <h3>${article.title}</h3>
+                <h4>pubblicato da ${article.author}</h4>
+                <span class="date">in data ${article.published}</span>
+                <p class="mt-2">${article.content}</p>
+                <img width="100%" src="./assets/images/${article.image}.jpg" alt="">
+            </div>                        
+            <div class="tagsBox">           
+            </div>                       
+        </div>
+    </div>
+    `
+}
+
+/**
+ * Generate more specific MarkUp 
+ * @param {String} type 
+ * @returns Object: MarkUp
+ */
+function generateTags(type) {
+    return `<div class="tag ${type}_bgColor">${type}</div>`
+
+};
+
+/**
+ * Generate a bookMark with Event
+ * @returns object: icon
+ */
+function generateBookMark(attributeId) {
+    const iEl = document.createElement('i');
+    iEl.classList.add('fa-regular', 'fa-bookmark', 'position-absolute');
+    iEl.setAttribute('id', attributeId)
+    iEl.addEventListener('click', function(e) {
+        iEl.classList.replace('fa-regular', 'fa-solid');
+    })
+    return iEl
+};
+console.log(generateBookMark());
 
 /**
  * Converts two keys (.published and .tags) of every Objects of an Array
@@ -127,73 +272,3 @@ function renderSelectOptions (optionsList, selectDomEl){
     })
 
 }
-
-/**
- * Renders a list of Article-cards into the given Dom Element 
- * @param {Array} articleList An Array of Objects 
- * @param {Object} domElement The given dom element where to append articles
- */
-function renderArticles (articleList, domElement){
-    
-    articleList.forEach(article => {
-        // rendering main markup of article cards
-        domElement.insertAdjacentHTML("beforeend", generateArticle(article));  
-    
-        // rendering cathegory tags according to objects key 'tags'
-        const tagsBoxEl = document.querySelector(`#${article.image} .tagsBox`);
-        //console.log(tagsBoxEl);
-        
-        for (let i = 0; i < article.tags.length; i++) {
-            tagsBoxEl.insertAdjacentHTML("beforeend", generateTags(article.tags[i]));
-        }   
-    
-        // rendering bookmarks
-        const boxEl = document.getElementById([article.image])
-        //console.log(boxEl);
-        const iEl = generateBookMark()
-        //console.log(iEl);
-        boxEl.appendChild(iEl)
-    }) 
-}
-
-/**
- * Generate the main-Markup of a Article-card
- * @param {Object} article An Object with several keys
- * @returns An Object: MarkUp
- */
-function generateArticle(article) {
-    return `            
-    <div class="col">
-        <div id='${article.image}' class="box bg-white position-relative">
-            <div>
-                <h3>${article.title}</h3>
-                <h4>pubblicato da ${article.author}</h4>
-                <span class="date">in data ${article.published}</span>
-                <p class="mt-2">${article.content}</p>
-                <img width="100%" src="./assets/images/${article.image}.jpg" alt="">
-            </div>                        
-            <div class="tagsBox">           
-            </div>                       
-        </div>
-    </div>
-    `
-}
-
-/**
- * Generate more specific MarkUp to be added to the main-MarkUp
- * @param {String} type 
- * @returns Object: MarkUp
- */
-function generateTags(type) {
-    return `<div class="tag ${type}_bgColor">${type}</div>`
-
-};
-
-function generateBookMark() {
-    const iEl = document.createElement('i');
-    iEl.classList.add('fa-regular', 'fa-bookmark', 'position-absolute');
-    iEl.addEventListener('click', function(e) {
-        iEl.classList.replace('fa-regular', 'fa-solid');
-    })
-    return iEl
-};
