@@ -93,80 +93,21 @@ selectEl.addEventListener('change', function(e) {
     renderArticles (selectedArticles, rowEl)
     
     document.querySelector('#rubber-duck i').classList.replace('fa-regular', 'fa-solid');
+
+    /* _____________________________________________ */
+
+    
+
+
+    /* __________________________________________________ */
 })
 
 /* **************************************************************************+ */
 // Checkbox Filter
 
-const checkEl = document.getElementById('checkedArticles')
-
-let checkedArticles = []
-
-checkEl.addEventListener('change', function(e){
-    
-    if (this.checked) {
-        
-        const checkedNews = document.querySelectorAll('i')
-
-        checkedNews.forEach(bookmarkEl => {
-            const iId = bookmarkEl.id
-            let x = bookmarkEl.classList.contains('fa-solid')
-            console.log(x);
-            if (x === true){
-                
-                console.log(iId);
-                console.log(articles[iId - 1]);
-                checkedArticles.push(articles[iId - 1])
-                
-                /* const checkedArticles = selectedArticles.filter(article => article.id === iId)
-                console.log(checkedArticles); */
-                /* rowEl.innerHTML = '';
-    
-                renderArticles (checkedArticles, rowEl) */
-            }
-            
-        })
-        console.log(checkedArticles);
-
-        rowEl.innerHTML = '';
-    
-        renderArticles (checkedArticles, rowEl)
-
-        console.log("Checkbox is checked..");
-
-      } else {
-        console.log("Checkbox is default..");
-        checkedArticles = []
-      }
-    
-    
- /*    const checkedNews = document.querySelectorAll('i')
-    console.log(checkedNews);
-   
-    checkedNews.forEach(bookmarkEl => {
-        let x = bookmarkEl.classList.contains('fa-solid')
-        console.log(x, bookmarkEl.id);
-        // x ?  :
-        if (x === true){
-            const iId = bookmarkEl.id
-            console.log(iId);
-            const checkedArticles = selectedArticles.filter(article => article.id === iId)
-
-            rowEl.innerHTML = '';
-
-            renderArticles (checkedArticles, rowEl)
-        }
-        
-    }) */
-    
-    //console.log(checkedNews[0].id);
-    //selectedArticles.filter(article => )
 
 
-    //this.checked ? console.log('Yes') : console.log('No');
-})
-
-
+/* ************************************************************* */
 
 /**
  * Renders a list of Article-cards into the given Dom Element 
@@ -271,4 +212,90 @@ function renderSelectOptions (optionsList, selectDomEl){
     selectDomEl.appendChild(optionEl)
     })
 
+}
+
+
+
+
+
+
+
+const checkEl = document.getElementById('checkBox')
+
+    
+
+    checkEl.addEventListener('change', function(e){
+    
+        if (this.checked) {
+            
+            /* const checkedNews = document.querySelectorAll('i')
+
+            checkedNews.forEach(bookmarkEl => {
+                const iId = bookmarkEl.id
+                let x = bookmarkEl.classList.contains('fa-solid')
+                console.log(x);
+                console.log(iId);
+                if (x === true){
+                
+                    //console.log(iId);
+                    console.log(articles[iId - 1]);
+                    checkedArticles.push(articles[iId - 1])
+                
+                }
+            
+            }) */
+
+            generateCheckedNewsList()
+            //console.log(checkedArticles);
+
+            /* rowEl.innerHTML = '';
+    
+            renderArticles (checkedArticles, rowEl)
+ */
+            console.log("Checkbox is checked..");
+
+        } else {
+            rowEl.innerHTML = '';
+
+            renderArticles (selectedArticles, rowEl)
+
+            console.log("Checkbox is default..");
+        }
+
+        //this.checked ? console.log('Yes') : console.log('No');
+    })
+
+
+
+
+function generateCheckedNewsList(){
+    
+    const checkedNews = document.querySelectorAll('i')
+
+    let checkedArticles = []
+
+    checkedNews.forEach(bookmarkEl => {
+        const iId = bookmarkEl.id
+        let x = bookmarkEl.classList.contains('fa-solid')
+        console.log(x);
+        console.log(iId);
+        if (x === true){
+        
+            console.log(articles[iId - 1]);
+            checkedArticles.push(articles[iId - 1])
+                
+            /* const checkedArticles = selectedArticles.filter(article => article.id === iId)
+            console.log(checkedArticles); */
+            /* rowEl.innerHTML = '';
+    
+            renderArticles (checkedArticles, rowEl) */
+        }
+        console.log(checkedArticles);
+
+        
+
+    })
+    rowEl.innerHTML = '';
+    
+    renderArticles (checkedArticles, rowEl)
 }
