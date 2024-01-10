@@ -39,38 +39,21 @@ const articles = [
 
 convertObjects(articles)
 
-/* ****************************************************************** */
-//populate MarkUp
-
-const rowEl = document.querySelector('.row');
-
-renderArticles(articles, rowEl)
-
-document.querySelector('#rubber-duck i').classList.replace('fa-regular', 'fa-solid');
-
-/* ********************************************************************* */
-// populate select options
+const checkEl = document.getElementById('checkBox')
 
 const selectEl = document.getElementById('selectTag')
 
-const tagTypes = []
-const types = articles.filter(article => {
-    for (let i = 0; i < article.tags.length; i++) {
-        //tagTypes.push(article.tags[i])
-        if(!tagTypes.includes(article.tags[i])){
-            tagTypes.push(article.tags[i])
-          }    
-    } 
-    return tagTypes
-    
-})
+const rowEl = document.querySelector('.row');
 
-tagTypes.unshift('politica')
-
-renderSelectOptions(tagTypes, selectEl)
 
 /* ************************************************************************ */
-// Select Filter
+//populate DOM element
+
+renderArticles(articles, rowEl) 
+
+
+/* ************************************************************************ */
+// Select Filter   
 
 selectEl.addEventListener('change', function(e) {
 
@@ -80,57 +63,89 @@ selectEl.addEventListener('change', function(e) {
 
             if (article.tags[i] === this.value || this.value === 'all') {
                return true;         
-            } /* else {
-                rowEl.innerHTML = 'CIAO CIAO';
-            } */
-        
+            } 
         }
     })
     console.log(selectedArticles);
+    rowEl.innerHTML = '';
+    /* if (selectedArticles.length < 1){
+        // empty state 
+        rowEl.insertAdjacentHTML("beforeend", renderEmtyState ())
 
-    rowEl.innerHTML = ''; 
+    } else {
+        // populate DOM element
+        renderArticles (selectedArticles, rowEl);
+    } */
 
-    renderArticles (selectedArticles, rowEl)
+    selectedArticles.length < 1 ? rowEl.insertAdjacentHTML("beforeend", renderEmtyState ()) : renderArticles (selectedArticles, rowEl);
+
+
+/* *********************************************************+ */
+// Check Filter by Selected News
+
+    checkEl.addEventListener('change', () => {
+
+        renderCheckedNews (selectedArticles)
     
-    document.querySelector('#rubber-duck i').classList.replace('fa-regular', 'fa-solid');
+    })
+})
+ 
+/* ************************************************************************** */
+// Check Filter Initial/Refreshed page
+checkEl.addEventListener('change', () => {
 
-    /* _____________________________________________ */
-
-    
-
-
-    /* __________________________________________________ */
+    renderCheckedNews (articles)
 })
 
-/* **************************************************************************+ */
-// Checkbox Filter
 
 
 
-/* ************************************************************* */
+/* **************************************************************************** */
+// populate select options dynamically
+
+const tagTypes = []
+
+const types = articles.filter(article => {
+    for (let i = 0; i < article.tags.length; i++) {
+      
+        if(!tagTypes.includes(article.tags[i])){
+            tagTypes.push(article.tags[i])
+          }    
+    } 
+    return tagTypes    
+})
+
+tagTypes.unshift('politica')
+
+renderSelectOptions(tagTypes, selectEl)
+
+
+
+/* ****************************************************************** */
+// FUNCTIONS
 
 /**
  * Renders a list of Article-cards into the given Dom Element 
  * @param {Array} articleList An Array of Objects 
  * @param {Object} domElement The given dom element where to append articles
+ * @param {String} initialSelectValue The select filter for the initial/refreshed page
  */
-function renderArticles (articleList, domElement){
+function renderArticles (articleList, domElement){  
     
-    articleList.forEach(article => {
+    articleList.forEach(news => {
         // rendering main markup of article cards
-        domElement.insertAdjacentHTML("beforeend", generateArticle(article));  
+        domElement.insertAdjacentHTML("beforeend", generateArticle(news));  
     
         // rendering cathegory tags according to objects key 'tags'
-        const tagsBoxEl = document.querySelector(`#${article.image} .tagsBox`);
-        //console.log(tagsBoxEl);
+        const tagsBoxEl = document.querySelector(`#${news.image} .tagsBox`);
         
-        for (let i = 0; i < article.tags.length; i++) {
-            tagsBoxEl.insertAdjacentHTML("beforeend", generateTags(article.tags[i]));
+        for (let i = 0; i < news.tags.length; i++) {
+            tagsBoxEl.insertAdjacentHTML("beforeend", generateTags(news.tags[i]));
         }   
     
         // rendering bookmarks
-        const boxEl = document.getElementById([article.image])
-        const iEl = generateBookMark(article.id)
+        const boxEl = document.getElementById([news.image])
+        const iEl = generateBookMark(news.id, news.boolean)
         boxEl.appendChild(iEl)
     }) 
 }
@@ -159,7 +174,7 @@ function generateArticle(article) {
 }
 
 /**
- * Generate more specific MarkUp 
+ * Generate tags MarkUp 
  * @param {String} type 
  * @returns Object: MarkUp
  */
@@ -172,22 +187,60 @@ function generateTags(type) {
  * Generate a bookMark with Event
  * @returns object: icon
  */
-function generateBookMark(attributeId) {
+function generateBookMark(attributeId, boolean) {
+
     const iEl = document.createElement('i');
     iEl.classList.add('fa-regular', 'fa-bookmark', 'position-absolute');
     iEl.setAttribute('id', attributeId)
+    
+    boolean === true ? iEl.classList.replace('fa-regular', 'fa-solid') : iEl.classList.replace('fa-solid', 'fa-regular'); 
+    
     iEl.addEventListener('click', function(e) {
+
         iEl.classList.replace('fa-regular', 'fa-solid');
+        
+        articles[attributeId - 1].boolean = true
+        console.log(articles);   
     })
     return iEl
 };
-console.log(generateBookMark());
+
+/**
+ * 
+ * @returns Object: empty-state message
+ */
+function renderEmtyState () {
+
+    return `<div class="col">
+                <h2 class="text-white fw-bold">No news avilable</h2>
+            </div>`
+}
+
+/**
+ * Renders all options in a select dynamically
+ * @param {Array} optionsList A list of Strings
+ * @param {Object} selectDomEl the SelectDomElement where append all Options 
+ */
+function renderSelectOptions (optionsList, selectDomEl){
+
+    optionsList.forEach(option => {
+
+        const optionEl = document.createElement('option')
+        optionEl.value = option
+        optionEl.innerText = option.charAt(0).toUpperCase() + option.slice(1, option.length).toLowerCase()
+
+    selectDomEl.appendChild(optionEl)
+    })
+}
 
 /**
  * Converts two keys (.published and .tags) of every Objects of an Array
  * @param {Array} objectsList An Array of Objects
  */
 function convertObjects(objectsList) {
+
+    objectsList[0].boolean = true
+    
     objectsList.forEach(article => {
         //convert us-date --> eu-date
         const split = article.published.split(/-/); 
@@ -199,103 +252,31 @@ function convertObjects(objectsList) {
 }
 
 /**
- * Renders all options in a select dynamically
- * @param {Array} optionsList A list of Strings
- * @param {Object} selectDomEl the SelectDomElement where append all Options 
+ * Renders a list of filtered article-cards into the given dom element
+ * @param {Array} objectList An Array of Objects
  */
-function renderSelectOptions (optionsList, selectDomEl){
-    optionsList.forEach(option => {
-        const optionEl = document.createElement('option')
-        optionEl.value = option
-        optionEl.innerText = option.charAt(0).toUpperCase() + option.slice(1, option.length).toLowerCase()
-
-    selectDomEl.appendChild(optionEl)
-    })
-
-}
-
-
-
-
-
-
-
-const checkEl = document.getElementById('checkBox')
-
+function renderCheckedNews (objectList) {
     
+    if (checkEl.checked) {
 
-    checkEl.addEventListener('change', function(e){
-    
-        if (this.checked) {
-            
-            /* const checkedNews = document.querySelectorAll('i')
-
-            checkedNews.forEach(bookmarkEl => {
-                const iId = bookmarkEl.id
-                let x = bookmarkEl.classList.contains('fa-solid')
-                console.log(x);
-                console.log(iId);
-                if (x === true){
-                
-                    //console.log(iId);
-                    console.log(articles[iId - 1]);
-                    checkedArticles.push(articles[iId - 1])
-                
-                }
-            
-            }) */
-
-            generateCheckedNewsList()
-            //console.log(checkedArticles);
-
-            /* rowEl.innerHTML = '';
-    
-            renderArticles (checkedArticles, rowEl)
- */
-            console.log("Checkbox is checked..");
-
-        } else {
+        const savedNews = objectList.filter(article => article.boolean === true)
+        rowEl.innerHTML = '';
+        savedNews.length < 1 ? rowEl.insertAdjacentHTML("beforeend", renderEmtyState ()) : renderArticles (savedNews, rowEl);
+        /* if (savedNews.length < 1){
+            // empty state
             rowEl.innerHTML = '';
-
-            renderArticles (selectedArticles, rowEl)
-
-            console.log("Checkbox is default..");
-        }
-
-        //this.checked ? console.log('Yes') : console.log('No');
-    })
-
-
-
-
-function generateCheckedNewsList(){
+            rowEl.insertAdjacentHTML("beforeend", renderEmtyState ())
     
-    const checkedNews = document.querySelectorAll('i')
+        } else {
+            // populate DOM element    
+            rowEl.innerHTML = '';
+            renderArticles (savedNews, rowEl)  
+        } */
 
-    let checkedArticles = []
 
-    checkedNews.forEach(bookmarkEl => {
-        const iId = bookmarkEl.id
-        let x = bookmarkEl.classList.contains('fa-solid')
-        console.log(x);
-        console.log(iId);
-        if (x === true){
+    } else  /* if (checkEl is not checked) */ {
         
-            console.log(articles[iId - 1]);
-            checkedArticles.push(articles[iId - 1])
-                
-            /* const checkedArticles = selectedArticles.filter(article => article.id === iId)
-            console.log(checkedArticles); */
-            /* rowEl.innerHTML = '';
-    
-            renderArticles (checkedArticles, rowEl) */
-        }
-        console.log(checkedArticles);
-
-        
-
-    })
-    rowEl.innerHTML = '';
-    
-    renderArticles (checkedArticles, rowEl)
+        rowEl.innerHTML = '';
+        renderArticles (objectList, rowEl)
+    }
 }
