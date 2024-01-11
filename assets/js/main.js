@@ -51,53 +51,31 @@ const rowEl = document.querySelector('.row');
 
 renderArticles(articles, rowEl) 
 
+filterCheckedNews (articles)  // Check Filter for Initial/Refreshed page
+
 
 /* ************************************************************************ */
 // Select Filter   
 
 selectEl.addEventListener('change', function(e) {
 
-    selectedArticles = articles.filter((article) => {
+    selectedNews = articles.filter((news) => {
 
-        for (let i = 0; i < article.tags.length; i++) {
+        for (let i = 0; i < news.tags.length; i++) {
 
-            if (article.tags[i] === this.value || this.value === 'all') {
+            if (news.tags[i] === this.value || this.value === 'all') {
                return true;         
             } 
         }
     })
-    console.log(selectedArticles);
-    rowEl.innerHTML = '';
-    /* if (selectedArticles.length < 1){
-        // empty state 
-        rowEl.insertAdjacentHTML("beforeend", renderEmtyState ())
-
-    } else {
-        // populate DOM element
-        renderArticles (selectedArticles, rowEl);
-    } */
-
-    selectedArticles.length < 1 ? rowEl.insertAdjacentHTML("beforeend", renderEmtyState ()) : renderArticles (selectedArticles, rowEl);
-
-
-/* *********************************************************+ */
-// Check Filter by Selected News
-
-    checkEl.addEventListener('change', () => {
-
-        renderCheckedNews (selectedArticles)
     
-    })
+    rowEl.innerHTML = '';
+
+    selectedNews.length < 1 ? rowEl.insertAdjacentHTML("beforeend", generateEmtyState ()) : renderArticles (selectedNews, rowEl);
+
+    filterCheckedNews (selectedNews) // Check Filter for selected news
+    
 })
- 
-/* ************************************************************************** */
-// Check Filter Initial/Refreshed page
-checkEl.addEventListener('change', () => {
-
-    renderCheckedNews (articles)
-})
-
-
 
 
 /* **************************************************************************** */
@@ -115,9 +93,9 @@ const types = articles.filter(article => {
     return tagTypes    
 })
 
-tagTypes.unshift('politica')
+renderSelectOptions(tagTypes, selectEl)  
 
-renderSelectOptions(tagTypes, selectEl)
+
 
 
 
@@ -126,13 +104,12 @@ renderSelectOptions(tagTypes, selectEl)
 
 /**
  * Renders a list of Article-cards into the given Dom Element 
- * @param {Array} articleList An Array of Objects 
- * @param {Object} domElement The given dom element where to append articles
- * @param {String} initialSelectValue The select filter for the initial/refreshed page
+ * @param {Array} newsList An Array of Objects 
+ * @param {object} domElement The given dom element where to append articles
  */
-function renderArticles (articleList, domElement){  
+function renderArticles (newsList, domElement){  
     
-    articleList.forEach(news => {
+    newsList.forEach(news => {
         // rendering main markup of article cards
         domElement.insertAdjacentHTML("beforeend", generateArticle(news));  
     
@@ -147,24 +124,24 @@ function renderArticles (articleList, domElement){
         const boxEl = document.getElementById([news.image])
         const iEl = generateBookMark(news.id, news.boolean)
         boxEl.appendChild(iEl)
-    }) 
+    })
 }
 
 /**
  * Generate the main-Markup of a Article-card
- * @param {Object} article An Object with several keys
+ * @param {object} news An Object with several keys
  * @returns An Object: MarkUp
  */
-function generateArticle(article) {
+function generateArticle(news) {
     return `            
     <div class="col">
-        <div id='${article.image}' class="box bg-white position-relative">
+        <div id='${news.image}' class="box bg-white position-relative">
             <div>
-                <h3>${article.title}</h3>
-                <h4>pubblicato da ${article.author}</h4>
-                <span class="date">in data ${article.published}</span>
-                <p class="mt-2">${article.content}</p>
-                <img width="100%" src="./assets/images/${article.image}.jpg" alt="">
+                <h3>${news.title}</h3>
+                <h4>pubblicato da ${news.author}</h4>
+                <span class="date">in data ${news.published}</span>
+                <p class="mt-2">${news.content}</p>
+                <img width="100%" src="./assets/images/${news.image}.jpg" alt="${news.image}">
             </div>                        
             <div class="tagsBox">           
             </div>                       
@@ -175,62 +152,89 @@ function generateArticle(article) {
 
 /**
  * Generate tags MarkUp 
- * @param {String} type 
+ * @param {string} tagKey key of an object
  * @returns Object: MarkUp
  */
-function generateTags(type) {
-    return `<div class="tag ${type}_bgColor">${type}</div>`
+function generateTags(tagKey) {
+    return `<div class="tag ${tagKey}_bgColor">${tagKey}</div>`
 
 };
 
 /**
  * Generate a bookMark with Event
+ * @param {string} idKey key of an object
+ * @param {string} booleanKey key of an object
  * @returns object: icon
  */
-function generateBookMark(attributeId, boolean) {
+function generateBookMark(idKey, booleanKey) {
 
     const iEl = document.createElement('i');
     iEl.classList.add('fa-regular', 'fa-bookmark', 'position-absolute');
-    iEl.setAttribute('id', attributeId)
+    iEl.setAttribute('id', idKey)
     
-    boolean === true ? iEl.classList.replace('fa-regular', 'fa-solid') : iEl.classList.replace('fa-solid', 'fa-regular'); 
+    booleanKey === true ? iEl.classList.replace('fa-regular', 'fa-solid') : iEl.classList.replace('fa-solid', 'fa-regular'); 
     
     iEl.addEventListener('click', function(e) {
 
         iEl.classList.replace('fa-regular', 'fa-solid');
         
-        articles[attributeId - 1].boolean = true
+        articles[idKey - 1].boolean = true
         console.log(articles);   
     })
     return iEl
 };
 
 /**
- * 
+ * Renders a list of filtered article-cards into the given dom element
+ * @param {Array} objectList An Array of Objects
+ */
+function filterCheckedNews (objectList) {
+    
+    checkEl.addEventListener('change', () => {
+    
+        rowEl.innerHTML = '';
+    
+        if (checkEl.checked) {
+
+            const savedNews = objectList.filter(article => article.boolean === true)
+      
+            savedNews.length < 1 ? rowEl.insertAdjacentHTML("beforeend", generateEmtyState ()) : renderArticles (savedNews, rowEl);
+
+        } else  /* if (checkEl is not checked) */ {
+        
+            objectList.length < 1 ? rowEl.insertAdjacentHTML("beforeend", generateEmtyState ()) : renderArticles (objectList, rowEl);
+        }
+    })
+}
+
+/**
+ * Generate markup in case of empty state
  * @returns Object: empty-state message
  */
-function renderEmtyState () {
+function generateEmtyState () {
 
     return `<div class="col">
-                <h2 class="text-white fw-bold">No news avilable</h2>
+                <h2 class="text-white fw-bold">No news available</h2>
             </div>`
 }
 
 /**
  * Renders all options in a select dynamically
  * @param {Array} optionsList A list of Strings
- * @param {Object} selectDomEl the SelectDomElement where append all Options 
+ * @param {object} selectDomEl the SelectDomElement where append all Options 
  */
 function renderSelectOptions (optionsList, selectDomEl){
-
-    optionsList.forEach(option => {
+    
+    optionsList.unshift('politica')
+    
+    optionsList.forEach(tag => {
 
         const optionEl = document.createElement('option')
-        optionEl.value = option
-        optionEl.innerText = option.charAt(0).toUpperCase() + option.slice(1, option.length).toLowerCase()
+        optionEl.value = tag
+        optionEl.innerText = tag.charAt(0).toUpperCase() + tag.slice(1, tag.length).toLowerCase()
 
     selectDomEl.appendChild(optionEl)
-    })
+    })   
 }
 
 /**
@@ -242,41 +246,11 @@ function convertObjects(objectsList) {
     objectsList[0].boolean = true
     
     objectsList.forEach(article => {
-        //convert us-date --> eu-date
-        const split = article.published.split(/-/); 
-        article.published = (split[2]+'/'+split[1]+'/'+split[0]); 
+        //convert us-date --> eu-date 
+        article.published = (article.published.split('-')[2] + '/' + article.published.split('-')[1] + '/' + article.published.split('-')[0]); 
+        console.log(article.published);
         //convert key-tags in array
-        const tags = article.tags.split(/, /)
-        article.tags = tags
+        article.tags = article.tags.split(', ')
     })
 }
 
-/**
- * Renders a list of filtered article-cards into the given dom element
- * @param {Array} objectList An Array of Objects
- */
-function renderCheckedNews (objectList) {
-    
-    if (checkEl.checked) {
-
-        const savedNews = objectList.filter(article => article.boolean === true)
-        rowEl.innerHTML = '';
-        savedNews.length < 1 ? rowEl.insertAdjacentHTML("beforeend", renderEmtyState ()) : renderArticles (savedNews, rowEl);
-        /* if (savedNews.length < 1){
-            // empty state
-            rowEl.innerHTML = '';
-            rowEl.insertAdjacentHTML("beforeend", renderEmtyState ())
-    
-        } else {
-            // populate DOM element    
-            rowEl.innerHTML = '';
-            renderArticles (savedNews, rowEl)  
-        } */
-
-
-    } else  /* if (checkEl is not checked) */ {
-        
-        rowEl.innerHTML = '';
-        renderArticles (objectList, rowEl)
-    }
-}

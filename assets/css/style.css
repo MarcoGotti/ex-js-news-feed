@@ -2,7 +2,8 @@ body{
     background-color: #023047;
 }
 
-.containerCSS{
+.container_main{
+    margin: auto;
     max-width: 70%;
 }
 
