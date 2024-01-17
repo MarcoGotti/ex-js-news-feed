@@ -42,6 +42,11 @@ body{
         display: block;
     }
 
+    .imageAlt{
+        height: 100px;
+        background-color: #fed502;
+    }
+
     .tagsBox {
         vertical-align: bottom;
         margin-top: 1.25rem;
@@ -83,7 +88,3 @@ body{
 .arte_bgColor {
     background-color: #fed502;
 }
-
-
-
-

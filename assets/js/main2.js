@@ -1,4 +1,4 @@
-console.log("MY MILESTONE");
+console.log("VERSION AFTER FABIO'S LESSON");
 
 const checkEl = document.getElementById('checkBox')
 const selectEl = document.getElementById('selectTag')
@@ -44,14 +44,16 @@ const articles = [
 ];
 
 convertObjects(articles)
-renderSelectOptions(selectEl)
+renderSelectOptions(selectEl) 
 
 /* ************************************************************************ */
 //initialize
 
+selectEl.addEventListener('change', applyFilter);
+checkEl.addEventListener('change', applyFilter);
+
 renderArticles(articles, rowEl) 
-filterSelect (articles)
-filterCheck (articles)
+
 
 
 /* ****************************************************************** */
@@ -63,19 +65,19 @@ filterCheck (articles)
  * @param {object} domElement The given dom element where to append articles
  */
 function renderArticles (newsList, domElement){  
-
+    
     newsList.forEach(news => {
-        // rendering main markup of article cards with Template Literal
+
+        // rendering main markup of article cards
         domElement.insertAdjacentHTML("beforeend", generateArticle(news));  
     
-        // rendering cathegory tags with .createEl
-        const tagsBoxEl = document.querySelector(`[data-index="${news.id}"] .tagsBox`);
+        // rendering cathegory tags according to objects key 'tags'
+        const tagsBoxEl = document.querySelector(`[data-index="${news.id}"] .tagsBox`);     
         for (let i = 0; i < news.tags.length; i++) {
-            const tagBadge = generateTags(news.tags[i])
-            tagsBoxEl.appendChild(tagBadge);           
+            tagsBoxEl.insertAdjacentHTML("beforeend", generateTags(news.tags[i]));
         }   
     
-        // rendering bookmarks with .createEl
+        // rendering bookmarks
         const iEl = generateBookMark(news)
         tagsBoxEl.insertAdjacentElement("afterend", iEl)
     })
@@ -106,115 +108,85 @@ function generateArticle(news) {
 
 /**
  * Generate tags MarkUp 
- * @param {string} tag value of a key
+ * @param {string} tagKey key of an object
  * @returns String: MarkUp
  */
-function generateTags(tag) {
+function generateTags(tagKey) {  
+    return `<div class="tag ${tagKey}_bgColor">${tagKey}</div>`
 
-    const tagBadge = document.createElement('div');
-    tagBadge.className = `tag ${tag}_bgColor`
-    tagBadge.innerText = `${tag}`
-    
-    return tagBadge
 };
 
 /**
- * Generate a bookMarkEl with attached Event
+ * Generate a bookMark with Event
  * @param {object} news An Object
  * @returns object: icon
  */
 function generateBookMark(news) { 
-
+    
     const iEl = document.createElement('i');
     iEl.classList.add(news.boolean === true ? iEl.classList.add('fa-solid') : iEl.classList.add('fa-regular'), 'fa-bookmark', 'position-absolute');
-
+    
     //FirstClick
-    iEl.addEventListener('click', () => {       
+    iEl.addEventListener('click', () => {        
         iEl.classList.replace('fa-regular', 'fa-solid');
         articles[news.id - 1].boolean = true 
-        
-        //Second Click
-        iEl.addEventListener('click', () =>{
-            iEl.classList.replace('fa-solid', 'fa-regular');        
-            articles[news.id - 1].boolean = false
-        })
     })
     return iEl 
 };
 
-/**
- * Applies filter selection
- * @param {Array} objectList 
- */
-function filterSelect (objectList){
-    selectEl.addEventListener('change', (e) => {
-
-        selectedNews = objectList.filter((news) => {        
-            for (let i = 0; i < news.tags.length; i++) {
-                if (news.tags[i] === e.target.value || e.target.value === '') {
-                return true;         
-                } 
-            }
-        })
-    filterResult(selectedNews)
-    filterCheck (selectedNews) // Check Filter for selected news   
-    })
+function applyFilter(){
+    const type = selectEl.value;
+    const onlySaved = checkEl.checked;
+  
+    let filteredItems;
+    filteredItems = filterByType(articles, type);
+  
+    if (onlySaved) {
+      filteredItems = filterOnlyChecked(filteredItems);
+    }
+  
+    if (filteredItems.length > 0) {
+        rowEl.innerHTML = '';
+        renderArticles(filteredItems, rowEl);
+    } else {
+        rowEl.innerHTML = '';
+      noItemsToShow();
+    }
 }
 
-/**
- * Applies Filter check
- * @param {Array} objectList An Array of Objects
- */
-function filterCheck (objectList) {   
-    checkEl.addEventListener('change', (e) => {   
-     
-        if (e.target.checked) {
-            const savedNews = objectList.filter(article => article.boolean === true)     
-            filterResult(savedNews)
-
-        } else {
-            filterResult(objectList)
-        }
-    })
-}
-
-/**
- * @param {aRRAY} objectList An Array of Objects
- * @returns a function
- */
-function filterResult(objectList){
-    rowEl.innerHTML = '';
-    return objectList.length < 1 ? rowEl.insertAdjacentHTML("beforeend", generateEmtyState()) : renderArticles (objectList, rowEl);
-}
-
-/**
- * Generate markup in case of empty state
- * @returns Object: empty-state message
- */
-function generateEmtyState () {
-
-    return `<div class="col">
+function noItemsToShow() {
+    rowEl.innerHTML = `<div class="col">
                 <h2 class="text-white fw-bold">No news available</h2>
-            </div>`
-}
+            </div>`;
+  }
+
+function filterOnlyChecked(arr) {
+    return arr.filter((item) => item.boolean === true);
+  }
+
+function filterByType(arr, type) {
+    if (!type) return arr;
+    return arr.filter((item) => item.tags.includes(type));
+  }
 
 /**
  * Renders all options in a select dynamically
  * @param {object} selectDomEl the SelectDomElement where append all Options 
  */
 function renderSelectOptions (selectDomEl){
-    
+
     const tagTypes = []
     articles.forEach(news => {
-        for (let i = 0; i < news.tags.length; i++) {     
+        for (let i = 0; i < news.tags.length; i++) {      
             if(!tagTypes.includes(news.tags[i])){
-            tagTypes.push(news.tags[i])
+                tagTypes.push(news.tags[i])
             }    
-        }   
+        } 
+        return tagTypes    
     })
-    
+
     tagTypes.unshift('politica')
-     
+    
     tagTypes.forEach(tag => {
         const optionEl = document.createElement('option')
         optionEl.value = tag
@@ -227,13 +199,31 @@ function renderSelectOptions (selectDomEl){
  * Converts two keys (.published and .tags) of every Objects of an Array
  * @param {Array} objectsList An Array of Objects
  */
-function convertObjects(objectsList){    
+function convertObjects(objectsList) {
+
+    objectsList[0].boolean = true
+    
     objectsList.forEach(news => {
         //convert us-date --> eu-date 
-        news.published = (news.published.split('-')[2] + '/' + news.published.split('-')[1] + '/' + news.published.split('-')[0]);  
+        news.published = (news.published.split('-')[2] + '/' + news.published.split('-')[1] + '/' + news.published.split('-')[0]); 
         //convert key-tags in array
         news.tags = news.tags.split(', ')
     })
-    objectsList[0].boolean = true
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
