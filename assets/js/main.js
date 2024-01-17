@@ -71,9 +71,9 @@ function renderArticles (newsList, domElement){
         // rendering cathegory tags with .createEl
         const tagsBoxEl = document.querySelector(`[data-index="${news.id}"] .tagsBox`);
         for (let i = 0; i < news.tags.length; i++) {
-            const tagBadge = generateTags(news.tags[i])
-            tagsBoxEl.appendChild(tagBadge);           
-        }   
+            const tagBadge = generateTagBadge(news.tags[i])
+            tagsBoxEl.appendChild(tagBadge); }           
+          
     
         // rendering bookmarks with .createEl
         const iEl = generateBookMark(news)
@@ -109,12 +109,11 @@ function generateArticle(news) {
  * @param {string} tag value of a key
  * @returns String: MarkUp
  */
-function generateTags(tag) {
-
+function generateTagBadge(tag) {
     const tagBadge = document.createElement('div');
     tagBadge.className = `tag ${tag}_bgColor`
     tagBadge.innerText = `${tag}`
-    
+
     return tagBadge
 };
 
@@ -130,17 +129,21 @@ function generateBookMark(news) {
 
     //FirstClick
     iEl.addEventListener('click', () => {       
-        iEl.classList.replace('fa-regular', 'fa-solid');
-        articles[news.id - 1].boolean = true 
-        
-        //Second Click
-        iEl.addEventListener('click', () =>{
-            iEl.classList.replace('fa-solid', 'fa-regular');        
-            articles[news.id - 1].boolean = false
-        })
+        iEl.classList.toggle('fa-solid', defineBoolean (news));
+        iEl.classList.toggle('fa-regular');
+        console.log(articles);
     })
     return iEl 
 };
+
+/**
+ * Creates and/or defines the key .boolean of an object
+ * @param {object} news 
+ */
+function defineBoolean(news) {
+    if(!articles[news.id - 1].boolean) return articles[news.id - 1].boolean = true;      
+    return  articles[news.id - 1].boolean === true ? articles[news.id - 1].boolean = false : articles[news.id - 1].boolean = true ;   
+}
 
 /**
  * Applies filter selection
@@ -179,7 +182,7 @@ function filterCheck (objectList) {
 }
 
 /**
- * @param {aRRAY} objectList An Array of Objects
+ * @param {Array} objectList An Array of Objects
  * @returns a function
  */
 function filterResult(objectList){
