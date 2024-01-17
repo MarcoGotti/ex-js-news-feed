@@ -141,8 +141,11 @@ function generateBookMark(news) {
  * @param {object} news 
  */
 function defineBoolean(news) {
-    if(!articles[news.id - 1].boolean) return articles[news.id - 1].boolean = true;      
-    return  articles[news.id - 1].boolean === true ? articles[news.id - 1].boolean = false : articles[news.id - 1].boolean = true ;   
+    if (!articles[news.id - 1].boolean || articles[news.id - 1].boolean == false) {
+        articles[news.id - 1].boolean = true;
+        return true
+    }       
+    articles[news.id - 1].boolean = false
 }
 
 /**
@@ -180,8 +183,6 @@ function filterCheck (objectList) {
             filterResult(objectList)
             //filterSelect (objectList)
         }
-        filterSelect (savedNews
-            )
     })
 }
 

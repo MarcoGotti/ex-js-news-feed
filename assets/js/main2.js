@@ -141,8 +141,11 @@ function generateBookMark(news) {
  * @param {object} news 
  */
 function defineBoolean(news) {
-    if(!articles[news.id - 1].boolean) return articles[news.id - 1].boolean = true;      
-    return  articles[news.id - 1].boolean === true ? articles[news.id - 1].boolean = false : articles[news.id - 1].boolean = true ;   
+    if (!articles[news.id - 1].boolean || articles[news.id - 1].boolean == false) {
+        articles[news.id - 1].boolean = true;
+        return true
+    }       
+    articles[news.id - 1].boolean = false  
 }
 
 function applyFilter(){
@@ -155,12 +158,12 @@ function applyFilter(){
     if (onlySaved) {
       filteredItems = filterOnlyChecked(filteredItems);
     }
-  
+    rowEl.innerHTML = '';
     if (filteredItems.length > 0) {
-        rowEl.innerHTML = '';
+        //rowEl.innerHTML = '';
         renderArticles(filteredItems, rowEl);
     } else {
-        rowEl.innerHTML = '';
+        //rowEl.innerHTML = '';
       noItemsToShow();
     }
 }
