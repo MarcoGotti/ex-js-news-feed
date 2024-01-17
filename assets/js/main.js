@@ -174,10 +174,14 @@ function filterCheck (objectList) {
         if (e.target.checked) {
             const savedNews = objectList.filter(article => article.boolean === true)     
             filterResult(savedNews)
+            //filterSelect (savedNews)
 
         } else {
             filterResult(objectList)
+            //filterSelect (objectList)
         }
+        filterSelect (savedNews
+            )
     })
 }
 

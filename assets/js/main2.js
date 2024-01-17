@@ -55,7 +55,6 @@ checkEl.addEventListener('change', applyFilter);
 renderArticles(articles, rowEl) 
 
 
-
 /* ****************************************************************** */
 // FUNCTIONS
 
@@ -67,15 +66,14 @@ renderArticles(articles, rowEl)
 function renderArticles (newsList, domElement){  
     
     newsList.forEach(news => {
-
         // rendering main markup of article cards
         domElement.insertAdjacentHTML("beforeend", generateArticle(news));  
     
         // rendering cathegory tags according to objects key 'tags'
         const tagsBoxEl = document.querySelector(`[data-index="${news.id}"] .tagsBox`);     
         for (let i = 0; i < news.tags.length; i++) {
-            tagsBoxEl.insertAdjacentHTML("beforeend", generateTags(news.tags[i]));
-        }   
+            const tagBadge = generateTagBadge(news.tags[i])
+            tagsBoxEl.appendChild(tagBadge); }  
     
         // rendering bookmarks
         const iEl = generateBookMark(news)
@@ -111,9 +109,12 @@ function generateArticle(news) {
  * @param {string} tagKey key of an object
  * @returns String: MarkUp
  */
-function generateTags(tagKey) {  
-    return `<div class="tag ${tagKey}_bgColor">${tagKey}</div>`
+function generateTagBadge(tag) {  
+    const tagBadge = document.createElement('div');
+    tagBadge.className = `tag ${tag}_bgColor`
+    tagBadge.innerText = `${tag}`
 
+    return tagBadge
 };
 
 /**
@@ -125,14 +126,24 @@ function generateBookMark(news) {
     
     const iEl = document.createElement('i');
     iEl.classList.add(news.boolean === true ? iEl.classList.add('fa-solid') : iEl.classList.add('fa-regular'), 'fa-bookmark', 'position-absolute');
-    
+
     //FirstClick
-    iEl.addEventListener('click', () => {        
-        iEl.classList.replace('fa-regular', 'fa-solid');
-        articles[news.id - 1].boolean = true 
+    iEl.addEventListener('click', () => {       
+        iEl.classList.toggle('fa-solid', defineBoolean (news));
+        iEl.classList.toggle('fa-regular');
+        console.log(articles);
     })
     return iEl 
-};
+}; 
+
+/**
+ * Creates and/or defines the key .boolean of an object
+ * @param {object} news 
+ */
+function defineBoolean(news) {
+    if(!articles[news.id - 1].boolean) return articles[news.id - 1].boolean = true;      
+    return  articles[news.id - 1].boolean === true ? articles[news.id - 1].boolean = false : articles[news.id - 1].boolean = true ;   
+}
 
 function applyFilter(){
     const type = selectEl.value;
@@ -200,15 +211,13 @@ function renderSelectOptions (selectDomEl){
  * @param {Array} objectsList An Array of Objects
  */
 function convertObjects(objectsList) {
-
-    objectsList[0].boolean = true
-    
     objectsList.forEach(news => {
         //convert us-date --> eu-date 
         news.published = (news.published.split('-')[2] + '/' + news.published.split('-')[1] + '/' + news.published.split('-')[0]); 
         //convert key-tags in array
         news.tags = news.tags.split(', ')
     })
+    objectsList[0].boolean = true
 }
 
 
