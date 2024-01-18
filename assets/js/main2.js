@@ -93,7 +93,7 @@ function generateArticle(news) {
             <div>
                 <h3>${news.title}</h3>
                 <h4>pubblicato da ${news.author}</h4>
-                <span class="date">in data ${news.published}</span>
+                <span class="date">in data ${news.published.split('-').reverse().join('/')}</span>
                 <p class="mt-2">${news.content}</p>
                 <img width="100%" src="./assets/images/${news.image}.jpg" alt="${news.image === undefined ? '&#169; Missing Image' : ''}">
             </div>                        
@@ -216,7 +216,11 @@ function renderSelectOptions (selectDomEl){
 function convertObjects(objectsList) {
     objectsList.forEach(news => {
         //convert us-date --> eu-date 
-        news.published = (news.published.split('-')[2] + '/' + news.published.split('-')[1] + '/' + news.published.split('-')[0]); 
+        news.published.split('-').reverse()
+            console.log(news.published.split('-'));
+            console.log(news.published.split('-').reverse());
+            console.log(news.published.split('-').reverse().join('/'));
+        /* news.published = (news.published.split('-')[2] + '/' + news.published.split('-')[1] + '/' + news.published.split('-')[0]);   */
         //convert key-tags in array
         news.tags = news.tags.split(', ')
     })
